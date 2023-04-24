@@ -14,7 +14,8 @@ with weather_current as(
         Weather_Code,
         Wind_Degree,
         Wind_Dir,
-        Wind_Speed
+        Wind_Speed,
+        _AIRBYTE_CURRENT_HASHID 
     from {{ref('stg_weather_current')}}
 )
 ,weather_location as(
@@ -23,7 +24,8 @@ with weather_current as(
         lat,
         Lon,
         Name,
-        Region
+        Region,
+        _AIRBYTE_CALIFORNIA_CURRENT_WEATHER_HASHID
     from {{ref('stg_weather_current_location')}}
 )
 

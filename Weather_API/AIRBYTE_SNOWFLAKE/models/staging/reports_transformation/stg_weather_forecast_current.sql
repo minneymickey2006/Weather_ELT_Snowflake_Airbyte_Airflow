@@ -19,6 +19,7 @@
     Weather_Code,
     Wind_Degree,
     Wind_Dir,
-    Wind_Speed
+    Wind_Speed,
+    _AIRBYTE_CURRENT_HASHID
 from
     {{source("AIRBYTE_SCHEMA","CALIFORNIA_FORECAST_CURRENT")}}

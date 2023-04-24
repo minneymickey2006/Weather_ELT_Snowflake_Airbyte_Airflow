@@ -12,6 +12,6 @@ select
     Lon,
     Name,
     Region,
-    localtime
+    _AIRBYTE_CALIFORNIA_FORECAST_HASHID
 from
     {{source("AIRBYTE_SCHEMA","CALIFORNIA_FORECAST_LOCATION")}}

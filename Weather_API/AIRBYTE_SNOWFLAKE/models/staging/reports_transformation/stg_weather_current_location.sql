@@ -12,6 +12,6 @@ select
     Lon,
     Name,
     Region,
-    localtime
+    _AIRBYTE_CALIFORNIA_CURRENT_WEATHER_HASHID
 from
     {{ source("AIRBYTE_SCHEMA","CALIFORNIA_CURRENT_WEATHER_LOCATION") }}
