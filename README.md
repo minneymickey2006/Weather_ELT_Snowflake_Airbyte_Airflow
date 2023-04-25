@@ -83,12 +83,23 @@ commit;
 
 2. To create user for the connection to Kafka
 ```sql
--- set variables (these need to be uppercase)
-set airbyte_role = 'AIRBYTE_ROLE';
-set airbyte_username = 'AIRBYTE_USER';
-set airbyte_warehouse = 'AIRBYTE_WAREHOUSE';
-set airbyte_database = 'AIRBYTE_DATABASE';
-set airbyte_schema = 'AIRBYTE_SCHEMA';
+--create user and role
+CREATE USER confluent2 RSA_PUBLIC_KEY='MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1V+WROjik7v1oDRJxHa0Tl7ejtKm4SjuJ2qBiHKq06ja5mR977xmWorjeqNPLJ5Qkxwa+PDW6iXUTmZXyo/y7XCP/LXvYf1d4wphEU/PVLygnneqQAoVck09eiHSl/dgFNKbYlT3w+ko1Su+iZwYo7k2HonI4845hlUhe0MwoA3d2biwSMdWS5/WSOoxCUpYj/+kzKURLu4GmkJftpriYhNnLPnUrS6bUhfF8XJS0qa+AvVv/J96W5gIhXP3FFDGePjtrS+4bGAg/rpGu0w+X/7oVGNjo35cKO0R78mmk7c431pU3QHAvQZTgemSVaG6QFnRnC47uaulbWBIwjFT/QIDAQAB';
+create role kafka_connector_role2;
+
+--grant usage
+grant usage on database AIRBYTE_DATABASE to role kafka_connector_role2;AIRBYTE_DATABASE.AIRBYTE_SCHEMA.WEATHERSTACK_CURRENT_WEATHER_CURRENT
+grant usage on schema AIRBYTE_DATABASE.AIRBYTE_SCHEMA to role kafka_connector_role2;
+grant create table on schema AIRBYTE_DATABASE.AIRBYTE_SCHEMA to role kafka_connector_role2;
+grant create stage on schema AIRBYTE_DATABASE.AIRBYTE_SCHEMA to role kafka_connector_role2;
+grant create pipe on schema AIRBYTE_DATABASE.AIRBYTE_SCHEMA to role kafka_connector_role2;
+
+--grant role
+grant role kafka_connector_role2 to user confluent2;
+grant role kafka_connector_role2 to role ACCOUNTADMIN;
+
+--alter user
+alter user confluent2 set default_role=kafka_connector_role2;
 
 ```
 
