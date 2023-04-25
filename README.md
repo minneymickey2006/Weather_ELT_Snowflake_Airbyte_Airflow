@@ -120,8 +120,7 @@ The loaded datasets on Snowflake are made connection with DBT working environmen
 .env file is defined to hold the secret credential.
 
 ## Deployment on Cloud Platform
-##Installation of Airbyte
-Setup Environment
+Installation of Airbyte, Setup Environment
 1.	To connect to your instance, run the following command on your local terminal:
 SSH_KEY=/Users/sukarno.zhanggmail.com/Desktop/group1_project3_v4/airbyte.pem
 chmod 400 $SSH_KEY 
