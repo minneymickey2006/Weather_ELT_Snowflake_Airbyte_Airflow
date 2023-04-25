@@ -121,7 +121,6 @@ The loaded datasets on Snowflake are made connection with DBT working environmen
 
 ## Deployment on Cloud Platform
 Installation of Airbyte
-Set up the environment
 1.	To connect to your instance, run the following command on your local terminal:
 SSH_KEY=/Users/sukarno.zhanggmail.com/Desktop/group1_project3_v4/airbyte.pem
 chmod 400 $SSH_KEY 
@@ -140,7 +139,6 @@ mkdir airbyte && cd airbyte
 wget https://raw.githubusercontent.com/airbytehq/airbyte-platform/main/{.env,flags.yml,docker-compose.yaml}
 docker-compose up -d
 
-Install and start Airbyte
 1.	Connect to your instance:
 ssh -i /Users/sukarno.zhanggmail.com/Desktop/group1_project3_v4/airbyte.pem ec2-ec2-ec2-user@13.251.241.228
 2.	Install Airbyte:
@@ -148,7 +146,6 @@ mkdir airbyte && cd airbyte
 wget https://raw.githubusercontent.com/airbytehq/airbyte-platform/main/{.env,flags.yml,docker-compose.yaml}
 docker compose up -d
 
-Connect to Airbyte
 1.	Create an SSH tunnel for port 8000:
 SSH_KEY=/Users/sukarno.zhanggmail.com/Desktop/group1_project3_v4/airbyte.pem
 ssh -i $SSH_KEY -L 8000:localhost:8000 -N -f ec2-user@13.251.241.228
