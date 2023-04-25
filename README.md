@@ -121,6 +121,39 @@ The loaded datasets on Snowflake are made connection with DBT working environmen
 
 ## Deployment on Cloud Platform
 Installation of Airbyte
+Set up the environment
+1.	To connect to your instance, run the following command on your local terminal:
+SSH_KEY=/Users/sukarno.zhanggmail.com/Desktop/group1_project3_v4/airbyte.pem
+chmod 400 $SSH_KEY 
+ssh -i $SSH_KEY ec2-user@13.251.241.228
+
+2.	To install Docker, run the following command in your SSH session on the instance terminal:
+sudo yum update -y
+sudo yum install -y docker
+sudo service docker start
+sudo usermod -a -G docker $USER
+
+3.	To install docker-compose, run the following command in your ssh session on the instance terminal:
+sudo curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+mkdir airbyte && cd airbyte
+wget https://raw.githubusercontent.com/airbytehq/airbyte-platform/main/{.env,flags.yml,docker-compose.yaml}
+docker-compose up -d
+
+Install and start Airbyte
+1.	Connect to your instance:
+ssh -i /Users/sukarno.zhanggmail.com/Desktop/group1_project3_v4/airbyte.pem ec2-ec2-ec2-user@13.251.241.228
+2.	Install Airbyte:
+mkdir airbyte && cd airbyte
+wget https://raw.githubusercontent.com/airbytehq/airbyte-platform/main/{.env,flags.yml,docker-compose.yaml}
+docker compose up -d
+
+Connect to Airbyte
+1.	Create an SSH tunnel for port 8000:
+SSH_KEY=/Users/sukarno.zhanggmail.com/Desktop/group1_project3_v4/airbyte.pem
+ssh -i $SSH_KEY -L 8000:localhost:8000 -N -f ec2-user@13.251.241.228
+2.	Visit http://localhost:8000 to verify the deployment.
+![image](https://user-images.githubusercontent.com/78150905/234257909-128b41b9-fb06-485c-a217-aa7e488c9968.png)
 
 
 ## Semantic Analysis through Power BI
