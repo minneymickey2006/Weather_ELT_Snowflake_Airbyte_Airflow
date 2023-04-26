@@ -7,9 +7,10 @@ with weather_current_location as(
         Wind_Dir,
         country,
         lat,
-        lon
+        lon,
+        localtime
     from
-        {{ref('weather_location_current_status')}}
+        {{ref('cal_weather_location_current_status')}}
 )
 ,weather_forecast_location as(
     select
@@ -20,11 +21,11 @@ with weather_current_location as(
         Wind_Dir,
         Country
     from
-        {{ref('weather_forecast_location_status')}}
+        {{ref('cal_weather_forecast_location_status')}}
 )
 
 select
-    c.Humidity as Current_Humidity,
+    distinct c.Humidity as Current_Humidity,
     c.Pressure as Current_Pressure,
     c.Temperature as Current_Temperature,
     c.Wind_Speed as Current_Wind_Speed,
@@ -34,8 +35,10 @@ select
     f.Pressure as Forecasted_Pressure,
     f.Temperature as Forecasted_Temperature,
     f.Wind_Speed as Forecasted_Wind_Speed,
-    f.Wind_Dir as Forecasted_Wind_Direction
+    f.Wind_Dir as Forecasted_Wind_Direction,
+    c.localtime
 from
     weather_current_location as c
     inner join weather_forecast_location as f
     on c.Country=f.Country
+    limit 50

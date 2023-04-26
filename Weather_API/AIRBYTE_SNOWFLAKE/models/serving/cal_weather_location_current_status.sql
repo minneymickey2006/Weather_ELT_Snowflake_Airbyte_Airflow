@@ -25,12 +25,13 @@ with weather_current as(
         Lon,
         Name,
         Region,
+        localtime,
         _AIRBYTE_CALIFORNIA_CURRENT_WEATHER_HASHID
     from {{ref('stg_weather_current_location')}}
 )
 
 select
-    c.Humidity,
+    distinct c.Humidity,
     c.Pressure,
     c.Temperature,
     c.Wind_Speed,
@@ -39,6 +40,7 @@ select
     l.lat,
     l.lon,
     l.Name,
-    l.Region
+    l.Region,
+    l.localtime
 from weather_current as c
 cross join weather_location as l
