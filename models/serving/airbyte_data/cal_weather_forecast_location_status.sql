@@ -23,12 +23,13 @@ with weather_forecast as(
         lat,
         Lon,
         Name,
-        Region
+        Region,
+        localtime
     from {{ref('stg_weather_forecast_location')}}
 )
 
 select
-    c.Humidity,
+    distinct c.Humidity,
     c.Pressure,
     c.Temperature,
     c.Wind_Speed,
@@ -37,6 +38,8 @@ select
     l.lat,
     l.lon,
     l.Name,
-    l.Region
+    l.Region,
+    l.localtime
 from weather_forecast as c
 cross join weather_location as l
+limit 50

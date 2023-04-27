@@ -13,7 +13,7 @@ with weather_current_forecast as(
         Forecasted_Wind_Speed,
         Forecasted_Wind_Direction
     from
-        {{ref('weather_current_forecast_location')}}
+        {{ref('cal_weather_current_forecast_location')}}
 )
 
 select
@@ -27,3 +27,4 @@ select
     avg(Forecasted_Wind_Speed) as Average_Forecasted_Wind_Speed
 from
     weather_current_forecast
+    limit 50
