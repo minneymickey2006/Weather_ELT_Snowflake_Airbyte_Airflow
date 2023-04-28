@@ -8,7 +8,8 @@ with current_weather as(
         FeelsLike,
         Humidity,
         Visibility,
-        Weather_Code
+        Weather_Code,
+        Observation_Time
     from
         {{ref('stg_jakarta_kafka_alias')}}
 )
@@ -22,5 +23,6 @@ select
     min(FeelsLike) as Min_FeelsLike,
     min(humidity) as Min_Humidity,
     min(Visibility) as Min_Visibility,
-    min(Weather_Code) as Min_Weather_Code
+    min(Weather_Code) as Min_Weather_Code,
+    max(Observation_Time) as Last_Observation_Time
 from current_weather
