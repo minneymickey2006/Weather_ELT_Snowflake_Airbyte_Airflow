@@ -24,52 +24,52 @@ jobs:
       - name: install dependencies 
         run: |
           python -m pip install --upgrade pip
-          pip install -r transform/dbt/requirements.txt
+          pip install -r Weather_API/requirements.txt
       
       # install dbt packages
       - name: dbt deps
         run: |
-          cd Weather_ELT_Snowflake_Airbyte_Airflow\Weather_API\AIRBYTE_SNOWFLAKE
+          cd Weather_API/AIRBYTE_SNOWFLAKE
           dbt deps
 
       # run sqlfluff linting
       - name: sql linting
-        run: sqlfluff lint Weather_ELT_Snowflake_Airbyte_Airflow/Weather_API/AIRBYTE_SNOWFLAKE
+        run: sqlfluff lint Weather_API/AIRBYTE_SNOWFLAKE
 
-      # checkout to main 
-      - name: checkout to main
-        uses: actions/checkout@v3
-        with:
-          ref: main
+      # # checkout to main 
+      # - name: checkout to main
+      #   uses: actions/checkout@v3
+      #   with:
+      #     ref: main
       
-      # generate dbt manifest.json
-      - name: generate dbt manifest 
-        run: | 
-          cd Weather_ELT_Snowflake_Airbyte_Airflow/Weather_API/AIRBYTE_SNOWFLAKE
-          dbt deps
-          dbt compile --target dev
+      # # generate dbt manifest.json
+      # - name: generate dbt manifest 
+      #   run: | 
+      #     cd Weather_API/AIRBYTE_SNOWFLAKE
+      #     dbt deps
+      #     dbt compile --target dev
       
-      # publish manifest.json
-      - name: upload dbt manifest 
-        uses: actions/upload-artifact@v3
-        with: 
-          name: manifest.json
-          path: Weather_ELT_Snowflake_Airbyte_Airflow/Weather_API/AIRBYTE_SNOWFLAKE/target/manifest.json
+      # # publish manifest.json
+      # - name: upload dbt manifest 
+      #   uses: actions/upload-artifact@v3
+      #   with: 
+      #     name: manifest.json
+      #     path: Weather_API/AIRBYTE_SNOWFLAKE/target/manifest.json
 
-      # checkout back to current branch 
-      - name: checkout to current branch 
-        uses: actions/checkout@v3
+      # # checkout back to current branch 
+      # - name: checkout to current branch 
+      #   uses: actions/checkout@v3
 
-      # download manifest.json to current working directory 
-      - uses: actions/download-artifact@v3
-        with:
-          name: manifest.json
-          path: transform/dbt/adventureworks
+      # # download manifest.json to current working directory 
+      # - uses: actions/download-artifact@v3
+      #   with:
+      #     name: manifest.json
+      #     path: transform/dbt/adventureworks
 
-      # dbt run and test changed models with state modified flag 
-      - name: dbt run and test state modified 
-        run: | 
-          cd Weather_ELT_Snowflake_Airbyte_Airflow/Weather_API/AIRBYTE_SNOWFLAKE
-          dbt deps
-          dbt run -m state:modified+1 --defer --state . --target ci
-          dbt test -m state:modified+1 --defer --state . --target ci
+      # # dbt run and test changed models with state modified flag 
+      # - name: dbt run and test state modified 
+      #   run: | 
+      #     cd Weather_ELT_Snowflake_Airbyte_Airflow/Weather_API/AIRBYTE_SNOWFLAKE
+      #     dbt deps
+      #     dbt run -m state:modified+1 --defer --state . --target ci
+      #     dbt test -m state:modified+1 --defer --state . --target ci

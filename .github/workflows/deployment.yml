@@ -3,7 +3,7 @@ on:
   workflow_dispatch: 
 
 env:
-  451161856870.dkr.ecr.ap-southeast-2.amazonaws.com/adventureworks-dbt-preprod
+  451161856870.dkr.ecr.ap-southeast-2.amazonaws.com/adventureworks-dbt-dev
   
 
 jobs: 
