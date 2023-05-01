@@ -6,7 +6,7 @@ exclude_rules = L016,L028,L027
 [sqlfluff:templater:dbt]
 project_dir = Weather_API/AIRBYTE_SNOWFLAKE
 profiles_dir = Weather_API/AIRBYTE_SNOWFLAKE
-target = ci
+target = dev
 
 [sqlfluff:templater:jinja]
 apply_dbt_builtins = True
