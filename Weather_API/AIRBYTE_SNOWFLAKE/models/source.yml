@@ -14,4 +14,4 @@ sources:
       - name: CALIFORNIA_FORECAST_LOCATION
         description: ''
       - name: TOPIC1
-        description: ''   
+        description: ''

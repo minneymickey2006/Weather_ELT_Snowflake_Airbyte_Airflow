@@ -1,4 +1,4 @@
-{% snapshot snp_weather_current %}
+{% snapshot snp_weather_current%}
 
 {{
     config(
@@ -9,6 +9,6 @@
     )
 }}
 
-select * from {{ source('AIRBYTE_SCHEMA', 'CALIFORNIA_CURRENT_WEATHER_CURRENT')}}
+select * from {{ref('stg_weather_current')}}
 
 {% endsnapshot %}
