@@ -1,0 +1,12 @@
+[sqlfluff]
+templater = dbt
+dialect = snowflake
+exclude_rules = L016,L028,L027
+
+[sqlfluff:templater:dbt]
+project_dir = "Weather_API/AIRBYTE_SNOWFLAKE"
+profiles_dir = "Weather_API/AIRBYTE_SNOWFLAKE"
+target = ci
+
+[sqlfluff:templater:jinja]
+apply_dbt_builtins = True
