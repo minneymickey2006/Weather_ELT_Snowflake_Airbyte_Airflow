@@ -1,5 +1,5 @@
 # Weatherstack
-To provide meaningful insights to weather changes based on different parameters such as humidity, temperature and wind speed.
+To provide meaningful insights to weather changes based on different parameters such as humidity, temperature, pressure, weather codes and wind speed.
 
 # Workflow
 Extraction of datasets
@@ -111,13 +111,224 @@ The datasets are extracted and loaded into the snowflake.The snowflake is loaded
 The loaded datasets on Snowflake are made connection with DBT working environment through updation of profiles.yml
 
 ## Steps:
+For connection with editor. Update the profiles.yml file in the dbt with credentials. airbyte_snowflake: outputs: dev: type: snowflake threads: 1 account:{{Snowflake user account specification}} user: AIRBYTE_USER password: password role: AIRBYTE_ROLE warehouse: AIRBYTE_WAREHOUSE database: AIRBYTE_DATABASE schema: AIRBYTE_SCHEMA target: dev
 
+-- RUN the "dbt deps" command to initiate connection with Snowflake.
+
+For transformation process, the aim of the project to get better insights into current and forecast weather table. The different transformations applied on the tables and join together to get better quality transformed data.
+
+## Report generation through transformations applied:
+# Airbyte_data
+The dataset contains california weather dataset.
+{{
+    config(
+            materialized = "table",
+            database = "AIRBYTE_DATABASE",
+            schema = "AIRBYTE_SCHEMA"
+    )
+ }}
+
+select
+    country,
+    lat,
+    lon,
+    name,
+    region,
+    _airbyte_california_current_weather_hashid
+from
+    {{ source("AIRBYTE_SCHEMA","CALIFORNIA_CURRENT_WEATHER_LOCATION") }}
+
+
+with weather_current_forecast as(
+    select
+        Current_Humidity,
+        Current_Pressure,
+        Current_Temperature,
+        Current_Wind_Speed,
+        Country,
+        Forecasted_Humidity,
+        Forecasted_Pressure,
+        Forecasted_Temperature,
+        Forecasted_Wind_Speed,
+        localtime
+    from
+        {{ref('cal_weather_current_forecast_location')}}
+)
+
+select
+    distinct (Current_Humidity-Forecasted_Humidity) as Difference_Humidity,
+    (Current_Pressure-Forecasted_Pressure) as Difference_Pressure,
+    (Current_Temperature-Forecasted_Temperature) as Difference_Temperature,
+    (Current_Wind_Speed-Forecasted_Wind_Speed) as Difference_Wind_Speed,
+    localtime as localtime
+from
+    weather_current_forecast
+    limit 50
+
+-Joining current weather forecast with 
+
+with weather_current as(
+    select
+        CloudCover,
+        FeelsLike,
+        Humidity,
+        Observation_Time,
+        Precip,
+        Pressure,
+        Temperature,
+        UV_Index,
+        Visibility,
+        Weather_Code,
+        Wind_Degree,
+        Wind_Dir,
+        Wind_Speed,
+        _AIRBYTE_CURRENT_HASHID 
+    from {{ref('stg_weather_current')}}
+)
+,weather_location as(
+    select
+        country,
+        lat,
+        Lon,
+        Name,
+        Region,
+        localtime,
+        _AIRBYTE_CALIFORNIA_CURRENT_WEATHER_HASHID
+    from {{ref('stg_weather_current_location')}}
+)
+
+## Kafka Jakarta Dataset
+select
+    distinct c.Humidity,
+    c.Pressure,
+    c.Temperature,
+    c.Wind_Speed,
+    c.Wind_Dir,
+    l.country,
+    l.lat,
+    l.lon,
+    l.Name,
+    l.Region,
+    l.localtime
+from weather_current as c
+cross join weather_location as l
+
+##with weather_code as (
+    select
+        weathercode as weather_code,
+        condition as weather_condition
+    from
+        {{ref('weather_codes')}}
+),
+
+avg_weather as (
+    select
+        average_cloudcover,
+        average_precipitation,
+        average_pressure,
+        average_temperature,
+        average_wind_speed,
+        average_feelslike,
+        average_humidity,
+        average_visibility,
+        average_weather_code
+    from
+        {{ref('jakarta_kafka_average')}}
+)
+
+select
+    average_cloudcover,
+    average_precipitation,
+    average_pressure,
+    average_temperature,
+    average_wind_speed,
+    average_feelslike,
+    average_humidity,
+    average_visibility,
+    weather_code.weather_code,
+    weather_code.weather_condition
+from
+    avg_weather
+inner join weather_code
+    on avg_weather.average_weather_code = weather_code.weather_code
+
+-- Joining max_weather with averagw weather
+with weather_code as (
+    select
+        weathercode as weather_code,
+        condition as weather_condition
+    from
+        {{ref('weather_codes')}}
+),
+
+max_weather as (
+    select
+        max_cloudcover,
+        max_precipitation,
+        max_pressure,
+        max_temperature,
+        max_wind_speed,
+        max_feelslike,
+        max_humidity,
+        max_visibility,
+        max_weather_code
+    from
+        {{ref('jakarta_kafka_max')}}
+)
+
+select
+    max_cloudcover,
+    max_precipitation,
+    max_pressure,
+    max_temperature,
+    max_wind_speed,
+    max_feelslike,
+    max_humidity,
+    max_visibility,
+    weather_code.weather_code,
+    weather_code.weather_condition
+from
+    max_weather
+inner join weather_code
+    on max_weather.max_weather_code = weather_code.weather_code
+
+
+## DBT Seeds
+In the seeds, weather_codes.csv is added to interpret the weather codes are interpreted with weather descriptions of type of weather, so the different transformed models of 'california' and 'jakarta' are joined for better interpretation.
+
+## DBT Snapshots
+{% snapshot snp_weather_current %}
+
+{{
+    config(
+        target_schema='AIRBYTE_SCHEMA',
+        strategy='check',
+        unique_key='_AIRBYTE_CURRENT_HASHID',
+        check_cols='all'
+    )
+}}
+
+    select * from {{ ref('stg_weather_current') }}
+
+{% endsnapshot %}
+
+## DBT tests
+
+Singular and Generic both tests are performed along with built in functions for tests as Null and Unique.
 
 ## DockerFile
+To deploy work on the cloud platform, Docker File is defined outside the Dbt folder as:
+FROM ghcr.io/dbt-labs/dbt-snowflake:1.2.0
 
+COPY AIRBYTE_SNOWFLAKE/ .
+
+COPY docker/run_commands.sh .
+
+ENTRYPOINT ["/bin/bash", "run_commands.sh"]
 
 ## Secrets configuration
 .env file is defined to hold the secret credential.
+
 
 ## Deployment on Cloud Platform
 Installation of Airbyte, Setup Environment
@@ -152,6 +363,28 @@ Connect to Airbyte
 SSH_KEY=/Users/sukarno.zhanggmail.com/Desktop/group1_project3_v4/airbyte.pem
 ssh -i $SSH_KEY -L 8000:localhost:8000 -N -f ec2-user@13.251.241.228
 2.	Visit http://localhost:8000 to verify the deployment.
+
+## Continuous Integration using Github Actions
+Inside the .github contains the integration.yml file to trigger the integration of the steps through Actions and running the workflow.
+-- sqlfluff , sqllint are used to debug the code and fix it.
+
+## Running Airflow Locally (PATH="Weather_API\airflow")
+1. Inside the docker folder, build_run.sh contains 
+(a) docker build -t extended_airflow .
+
+(b) docker run -p 8080:8080 -v /$(pwd):/opt/airflow extended_airflow:latest standalone
+
+Run the airflow locally using, localohost:8080 on web browser and signing using 'admin' as user and password inside the 'pwd' directory in file as standalone_admin_password.txt.
+
+Inside, the present working directory 'dags/dbt' folder is created with inside the 'AIRBYTE_SNOWFLAKE' dbt folder.
+The airflow weather_etl7 for running the dags are in same level as dbt to trigger the dbt dag working.
+
+
+
+
+
+
+
 
 
 ## Semantic Analysis through Power BI

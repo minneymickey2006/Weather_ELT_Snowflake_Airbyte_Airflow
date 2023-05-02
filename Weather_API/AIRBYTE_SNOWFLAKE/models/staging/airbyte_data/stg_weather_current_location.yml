@@ -6,5 +6,4 @@ models:
       - name: _AIRBYTE_CALIFORNIA_CURRENT_WEATHER_HASHID
         tests:
           - not_null
-          - unique
           

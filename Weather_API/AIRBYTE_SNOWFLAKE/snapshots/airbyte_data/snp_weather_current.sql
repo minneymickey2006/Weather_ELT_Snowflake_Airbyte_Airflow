@@ -1,4 +1,4 @@
-{% snapshot snp_weather_current%}
+{% snapshot snp_weather_current %}
 
 {{
     config(
@@ -9,6 +9,6 @@
     )
 }}
 
-select * from {{ref('stg_weather_current')}}
+    select * from {{ ref('stg_weather_current') }}
 
 {% endsnapshot %}

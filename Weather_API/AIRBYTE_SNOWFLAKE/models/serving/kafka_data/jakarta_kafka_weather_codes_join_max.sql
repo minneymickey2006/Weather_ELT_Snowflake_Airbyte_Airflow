@@ -1,37 +1,38 @@
-with weather_code as(
+with weather_code as (
     select
-        weathercode as Weather_Code,
-        Condition as Weather_Condition
+        weathercode as weather_code,
+        condition as weather_condition
     from
         {{ref('weather_codes')}}
-)
-,max_weather as(
+),
+
+max_weather as (
     select
-        Max_CloudCover,
-        Max_Precipitation,
-        Max_Pressure,
-        Max_Temperature,
-        Max_Wind_Speed,
-        Max_FeelsLike,
-        Max_Humidity,
-        Max_Visibility,
-        Max_Weather_Code
-    from 
+        max_cloudcover,
+        max_precipitation,
+        max_pressure,
+        max_temperature,
+        max_wind_speed,
+        max_feelslike,
+        max_humidity,
+        max_visibility,
+        max_weather_code
+    from
         {{ref('jakarta_kafka_max')}}
 )
 
 select
-    Max_CloudCover,
-    Max_Precipitation,
-    Max_Pressure,
-    Max_Temperature,
-    Max_Wind_Speed,
-    Max_FeelsLike,
-    Max_Humidity,
-    Max_Visibility,
-    c.Weather_Code,
-    c.Weather_Condition
+    max_cloudcover,
+    max_precipitation,
+    max_pressure,
+    max_temperature,
+    max_wind_speed,
+    max_feelslike,
+    max_humidity,
+    max_visibility,
+    weather_code.weather_code,
+    weather_code.weather_condition
 from
-    max_weather as m
-    inner join weather_code as c
-    on m.Max_Weather_Code=c.Weather_Code
+    max_weather
+inner join weather_code
+    on max_weather.max_weather_code = weather_code.weather_code

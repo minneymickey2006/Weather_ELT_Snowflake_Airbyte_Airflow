@@ -1,37 +1,39 @@
-with weather_code as(
+with weather_code as (
     select
-        weathercode as Weather_Code,
-        Condition as Weather_Condition
+        weathercode as weather_code,
+        condition as weather_condition
     from
         {{ref('weather_codes')}}
-)
-,avg_weather as(
+),
+
+avg_weather as (
     select
-        Average_CloudCover,
-        Average_Precipitation,
-        Average_Pressure,
-        Average_Temperature,
-        Average_Wind_Speed,
-        Average_FeelsLike,
-        Average_Humidity,
-        Average_Visibility,
-        Average_Weather_Code
-    from 
+        average_cloudcover,
+        average_precipitation,
+        average_pressure,
+        average_temperature,
+        average_wind_speed,
+        average_feelslike,
+        average_humidity,
+        average_visibility,
+        average_weather_code
+    from
         {{ref('jakarta_kafka_average')}}
 )
 
 select
-    Average_CloudCover,
-    Average_Precipitation,
-    Average_Pressure,
-    Average_Temperature,
-    Average_Wind_Speed,
-    Average_FeelsLike,
-    Average_Humidity,
-    Average_Visibility,
-    c.Weather_Code,
-    c.Weather_Condition
+    average_cloudcover,
+    average_precipitation,
+    average_pressure,
+    average_temperature,
+    average_wind_speed,
+    average_feelslike,
+    average_humidity,
+    average_visibility,
+    weather_code.weather_code,
+    weather_code.weather_condition
 from
-    avg_weather as m
-    inner join weather_code as c
-    on m.Average_Weather_Code=c.Weather_Code
+    avg_weather
+inner join weather_code
+    on avg_weather.average_weather_code = weather_code.weather_code
+

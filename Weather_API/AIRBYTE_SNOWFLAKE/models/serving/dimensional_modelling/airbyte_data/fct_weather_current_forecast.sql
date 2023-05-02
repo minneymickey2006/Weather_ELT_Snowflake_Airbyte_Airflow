@@ -1,50 +1,52 @@
-with weather_current as(
+with weather_current as (
     select
-        CloudCover,
-        FeelsLike,
-        Humidity,
-        Observation_Time,
-        Precip,
-        Pressure,
-        Temperature,
-        UV_Index,
-        Visibility,
-        Weather_Code,
-        Wind_Degree,
-        Wind_Dir,
-        Wind_Speed,
-        _AIRBYTE_CURRENT_HASHID
+        cloudcover,
+        feelslike,
+        humidity,
+        observation_time,
+        precip,
+        pressure,
+        temperature,
+        uv_index,
+        visibility,
+        weather_code,
+        wind_degree,
+        wind_dir,
+        wind_speed,
+        _airbyte_current_hashid
     from {{ref('stg_weather_current')}}
-)
-,weather_location as(
+),
+
+weather_location as (
     select
         country,
         lat,
-        Lon,
-        Name,
-        Region,
-        _AIRBYTE_CALIFORNIA_CURRENT_WEATHER_HASHID
+        lon,
+        name,
+        region,
+        _airbyte_california_current_weather_hashid
     from {{ref('stg_weather_current_location')}}
-)
+),
 
-, final as (
+final as (
     select
-        {{ dbt_utils.surrogate_key(['weather_current._AIRBYTE_CURRENT_HASHID'])}} weather_key
-        ,{{dbt_utils.surrogate_key(['_AIRBYTE_CALIFORNIA_CURRENT_WEATHER_HASHID'])}} as weather_location_key
-        , weather_current.CloudCover
-        , weather_current.FeelsLike
-        , weather_current.Pressure
-        , weather_current.UV_Index
-        , weather_current.Wind_Degree
-        , weather_current.Wind_Dir
-        , weather_current.Wind_Speed
-        , country
-        , lat
-        , lon
-        , Name
-        , Region
+        {{ dbt_utils.surrogate_key(['weather_current._AIRBYTE_CURRENT_HASHID']) }} as weather_key,
+        {{ dbt_utils.surrogate_key(['_AIRBYTE_CALIFORNIA_CURRENT_WEATHER_HASHID']) }} as weather_location_key,
+        weather_current.cloudcover,
+        weather_current.feelslike,
+        weather_current.pressure,
+        weather_current.uv_index,
+        weather_current.wind_degree,
+        weather_current.wind_dir,
+        weather_current.wind_speed,
+        country,
+        lat,
+        lon,
+        name,
+        region
     from weather_current
     cross join weather_location
 )
+
 select *
 from final

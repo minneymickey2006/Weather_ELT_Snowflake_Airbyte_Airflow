@@ -1,47 +1,47 @@
-with weather_current as(
+with weather_current as (
     select
-    CloudCover,
-    FeelsLike,
-    Humidity,
-    Observation_Time,
-    Precip,
-    Pressure,
-    Temperature,
-    UV_Index,
-    Visibility,
-    Weather_Code,
-    Wind_Degree,
-    Wind_Dir,
-    Wind_Speed,
-    _AIRBYTE_CURRENT_HASHID
+        cloudcover,
+        feelslike,
+        humidity,
+        observation_time,
+        precip,
+        pressure,
+        temperature,
+        uv_index,
+        visibility,
+        weather_code,
+        wind_degree,
+        wind_dir,
+        wind_speed,
+        _airbyte_current_hashid
     from {{ref('stg_weather_current')}}
-)
-,w_code as(
+),
+
+w_code as (
     select
-        WeatherCode,
-        Condition
+        weathercode,
+        condition
     from {{ref('weather_codes')}}
 
 )
 
-select
-    distinct CloudCover,
-    FeelsLike,
-    Humidity,
-    Observation_Time,
-    Precip,
-    Pressure,
-    Temperature,
-    UV_Index,
-    Visibility,
-    Wind_Degree,
-    Wind_Dir,
-    Wind_Speed,
-    Weather_Code,
-    _AIRBYTE_CURRENT_HASHID,
-    c.Condition
+select distinct
+    cloudcover,
+    feelslike,
+    humidity,
+    observation_time,
+    precip,
+    pressure,
+    temperature,
+    uv_index,
+    visibility,
+    wind_degree,
+    wind_dir,
+    wind_speed,
+    weather_code,
+    _airbyte_current_hashid,
+    w_code.condition
 from
-    weather_current as w
-    inner join w_code as c
-    on w.Weather_Code=c.WeatherCode
-
+    weather_current
+inner join w_code
+    on weather_current.weather_code = w_code.weathercode

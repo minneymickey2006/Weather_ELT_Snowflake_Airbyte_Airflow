@@ -1,28 +1,28 @@
-with current_weather as(
-    select 
-        CloudCover,
-        Precipitation,
-        Pressure,
-        Temperature,
-        Wind_Speed,
-        FeelsLike,
-        Humidity,
-        Visibility,
-        Weather_Code,
-        Observation_Time
+with current_weather as (
+    select
+        cloudcover,
+        precipitation,
+        pressure,
+        temperature,
+        wind_speed,
+        feelslike,
+        humidity,
+        visibility,
+        weather_code,
+        observation_time
     from
         {{ref('stg_jakarta_kafka_alias')}}
 )
 
 select
-    min(CloudCover) as Min_CloudCover,
-    min(Precipitation) as Min_Precipitation,
-    min(Pressure) as Min_Pressure,
-    min(Temperature) as Min_Temperature,
-    min(Wind_Speed) as Min_Wind_Speed,
-    min(FeelsLike) as Min_FeelsLike,
-    min(humidity) as Min_Humidity,
-    min(Visibility) as Min_Visibility,
-    min(Weather_Code) as Min_Weather_Code,
-    max(Observation_Time) as Last_Observation_Time
+    min(cloudcover) as min_cloudcover,
+    min(precipitation) as min_precipitation,
+    min(pressure) as min_pressure,
+    min(temperature) as min_temperature,
+    min(wind_speed) as min_wind_speed,
+    min(feelslike) as min_feelslike,
+    min(humidity) as min_humidity,
+    min(visibility) as min_visibility,
+    min(weather_code) as min_weather_code,
+    max(observation_time) as last_observation_time
 from current_weather

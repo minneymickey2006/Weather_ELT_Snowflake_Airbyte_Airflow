@@ -9,9 +9,9 @@
 select
     country,
     lat,
-    Lon,
-    Name,
-    Region,
-    _AIRBYTE_CALIFORNIA_CURRENT_WEATHER_HASHID
+    lon,
+    name,
+    region,
+    _airbyte_california_current_weather_hashid
 from
     {{ source("AIRBYTE_SCHEMA","CALIFORNIA_CURRENT_WEATHER_LOCATION") }}

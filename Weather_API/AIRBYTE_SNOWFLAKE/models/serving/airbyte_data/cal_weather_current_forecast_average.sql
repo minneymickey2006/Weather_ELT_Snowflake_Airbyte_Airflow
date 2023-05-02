@@ -1,30 +1,30 @@
 -- Average Forecast and Current Updates for a city.
-with weather_current_forecast as(
+with weather_current_forecast as (
     select
-        Current_Humidity,
-        Current_Pressure,
-        Current_Temperature,
-        Current_Wind_Speed,
-        Current_Wind_Direction,
-        Country,
-        Forecasted_Humidity,
-        Forecasted_Pressure,
-        Forecasted_Temperature,
-        Forecasted_Wind_Speed,
-        Forecasted_Wind_Direction
+        current_humidity,
+        current_pressure,
+        current_temperature,
+        current_wind_speed,
+        current_wind_direction,
+        country,
+        forecasted_humidity,
+        forecasted_pressure,
+        forecasted_temperature,
+        forecasted_wind_speed,
+        forecasted_wind_direction
     from
         {{ref('cal_weather_current_forecast_location')}}
 )
 
 select
-    avg(Current_Humidity) as Average_Current_Humidity,
-    avg(Forecasted_Humidity) as Average_Forecast_Humidity,
-    avg(Current_Temperature) as Average_Current_Temperature,
-    avg(Forecasted_Temperature) as Average_Forecasted_Temperature,
-    avg(Current_Pressure) as Average_Current_Pressure,
-    avg(Forecasted_Pressure) as Average_Forecasted_Pressure,
-    avg(Current_Wind_Speed) as Average_Current_Wind_Speed,
-    avg(Forecasted_Wind_Speed) as Average_Forecasted_Wind_Speed
+    avg(current_humidity) as average_current_humidity,
+    avg(forecasted_humidity) as average_forecast_humidity,
+    avg(current_temperature) as average_current_temperature,
+    avg(forecasted_temperature) as average_forecasted_temperature,
+    avg(current_pressure) as average_current_pressure,
+    avg(forecasted_pressure) as average_forecasted_pressure,
+    avg(current_wind_speed) as average_current_wind_speed,
+    avg(forecasted_wind_speed) as average_forecasted_wind_speed
 from
     weather_current_forecast
-    limit 50
+limit 50
