@@ -1,6 +1,6 @@
 name: integration
 on:
-  pull_request:
+  pull_request:s
     branches: [ main ]
   workflow_dispatch:
 

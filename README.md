@@ -291,7 +291,14 @@ from
     max_weather
 inner join weather_code
     on max_weather.max_weather_code = weather_code.weather_code
-
+The various transformations applied are:
+(a) count
+(b) alias
+(c) cross join operation
+(d) group by
+(e) sum
+(f) where
+(f) Macro definition
 
 ## DBT Seeds
 In the seeds, weather_codes.csv is added to interpret the weather codes are interpreted with weather descriptions of type of weather, so the different transformed models of 'california' and 'jakarta' are joined for better interpretation.
@@ -379,14 +386,8 @@ Run the airflow locally using, localohost:8080 on web browser and signing using 
 Inside, the present working directory 'dags/dbt' folder is created with inside the 'AIRBYTE_SNOWFLAKE' dbt folder.
 The airflow weather_etl7 for running the dags are in same level as dbt to trigger the dbt dag working.
 
-
-
-
-
-
-
-
-
 ## Semantic Analysis through Power BI
+
+Different visualisations are prepared by Power BI to make better insights into the models generated through DBT.
 
 
