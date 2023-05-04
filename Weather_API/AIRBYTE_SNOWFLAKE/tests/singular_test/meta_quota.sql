@@ -1,4 +1,4 @@
---Singular test based average currency rate greater than 10 with severity "error".
+--Singular test based cloud cover greater than 0 with severity "error".
 
 {{
     config(
@@ -13,10 +13,8 @@ select
     MIN_WIND_SPEED,
     MIN_FEELSLIKE,
     MIN_HUMIDITY,
-    MIN_VISIBILITY,
-    C.WEATHER_CODE,
-    C.WEATHER_CONDITION
+    MIN_VISIBILITY
 from
     {{ ref('jakarta_kafka_weather_codes_join_min') }}
 where
-    MIN_TEMPERATURE > 0
+    MIN_CLOUDCOVER > 0
